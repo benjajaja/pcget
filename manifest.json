@@ -1,0 +1,22 @@
+{
+  "name": "Piratecloud",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "hitler no hizo nada malo",
+  "page_action": {
+	"default_name": "Kill all jews NOW!",
+  	"default_icon": "icon.png",
+	"default_popup": "popup.html"
+  },
+  "permissions": [
+    "tabs",
+	"clipboardWrite",
+    "http://piratecloud.tv/"
+  ],
+  "background": {
+  	"scripts": ["background.js"]
+  },
+  "content_scripts": [
+    { "matches": ["http://piratecloud.tv/*"], "js": ["contentscript.js"] }
+  ]
+}

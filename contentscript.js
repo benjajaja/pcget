@@ -1,24 +1,21 @@
 chrome.extension.onMessage.addListener(function(command, sender, sendResponse) {
-	if (command === 'getlink') {
-		var elements = document.getElementsByTagName('embed');
+	console.log('message.', command);
+	if (command === 'seasons') {
+		var elements = document.getElementsByClassName('subscription');
 		if (!elements || elements.length === 0) {
 			sendResponse(null);
+			
 		} else {
-			//sendResponse(elements[0].getAttribute('target'));
-			if (elements[0].playlist) {
-				elements[0].playlist.stop();
-			}
-			
-			
-			elements[0].parentNode.appendChild((function(url) {
-				var a = document.createElement('a');
-				a.href = url;
-				a.innerText = url;
-				
-				var h = document.createElement('h1');
-				h.appendChild(a);
-				return h;
-			})(elements[0].getAttribute('target')));
+			console.log('seasons: ', elements);
+			var seasons = Array.prototype.slice.call(elements).map(function(a) {
+				return a.getAttribute('temporada');
+			}).reduce(function(list, element) {
+				if (element) {
+					list.push(element);
+				}
+				return list;
+			}, []);
+			sendResponse(seasons.join(','));
 		}
     }
 });

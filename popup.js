@@ -1,6 +1,3 @@
-var id = chrome.extension.getBackgroundPage().showId;
-var seasons = chrome.extension.getBackgroundPage().seasons;
-
 var getSeason = function(season) {
 	var alert = function(text) {
 		var alert = document.createElement('div');
@@ -29,9 +26,10 @@ var getSeason = function(season) {
 			
 			var titles = Array.prototype.slice.call(div.getElementsByClassName('rlsliB')).map(function(li) {
 				var title = {
-					number: li.children[0].innerText.replace(/^\s+/, ''),
-					title: li.children[1].innerText,
+					number: li.children[0].innerText.replace(/\s+/g, ''),
+					title: li.children[1].innerText.replace(/^\s+/, ''),
 				};
+				console.log('title: "' + title.title + '" number "' + title.number + '"');
 				
 				var a = li.getElementsByClassName('archivo subscription')[0];
 				if (a) {
@@ -83,6 +81,22 @@ var getSeason = function(season) {
 										a.href = url;
 										a.innerText = i + 1;
 										a.target = '_blank';
+										
+										if (chrome.downloads) {
+											a.addEventListener('click', function(e) {
+												e.preventDefault();
+												console.log('Download! ' + url);
+												var ext = url.substr(url.lastIndexOf('.'));
+												chrome.downloads.download({
+													url: url,
+													filename: chrome.extension.getBackgroundPage().show.name + ' ' + season + 'x'
+														+ title.number
+														+ ' ' + title.title + ext,
+													saveAs: true
+												});
+											});
+										}
+										
 										links.appendChild(a);
 										links.appendChild(document.createTextNode(' '));
 									});
@@ -106,7 +120,7 @@ var getSeason = function(season) {
 			
 		}
 	};
-	xhr.open("GET", 'http://piratecloud.tv/fichas/loadEpisodios/' + id + '/' + season, true);
+	xhr.open("GET", 'http://piratecloud.tv/fichas/loadEpisodios/' + chrome.extension.getBackgroundPage().show.id + '/' + season, true);
 	xhr.send();
 };
 
@@ -144,12 +158,12 @@ var extractLink = function(html, isLink) {
 };
 
 var clear = function() {
-	document.body.innerHTML = '';
+	document.body.innerHTML = '<h1>' + chrome.extension.getBackgroundPage().show.name + '</h1>';
 	var div = document.createElement('div');
 	div.className = 'pagination';
 	
 	var ul = document.createElement('ul');
-	seasons.forEach(function(season) {
+	chrome.extension.getBackgroundPage().show.seasons.forEach(function(season) {
 		var li = document.createElement('li');
 		var a = document.createElement('a');
 		a.href = '#';

@@ -10,8 +10,8 @@
   },
   "permissions": [
     "tabs",
-	"clipboardWrite",
-    "http://piratecloud.tv/"
+	"downloads",
+    "http://*.piratecloud.tv/"
   ],
   "background": {
   	"scripts": ["background.js"]

@@ -24,6 +24,14 @@ chrome.extension.onMessage.addListener(function(command, sender, sendResponse) {
 		
 		seasons.sort();
 		
-		sendResponse(seasons.join(','));
+		var name;
+		Array.prototype.slice.call(document.getElementsByTagName('h1')).map(function(h1) {
+			if (h1.getAttribute('itemprop') == 'name') {
+				name = h1.innerText;
+			}
+		})[0];
+		
+		
+		sendResponse({seasons: seasons.join(','), name: name});
     }
 });

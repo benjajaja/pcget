@@ -147,7 +147,13 @@ var extractLink = function(html, isLink) {
 		if (!elements || elements.length === 0) {
 			return [];
 		} else {
-			return [elements[0].getAttribute('target')];
+			if (elements[0].hasAttribute('target')) {
+				return [elements[0].getAttribute('target')];
+			} else if (elements[0].hasAttribute('src')) {
+				return [elements[0].getAttribute('src')];
+			} else {
+				return [];
+			}
 		}
 		
 	} else {
@@ -158,7 +164,9 @@ var extractLink = function(html, isLink) {
 };
 
 var clear = function() {
-	document.body.innerHTML = '<h1>' + chrome.extension.getBackgroundPage().show.name + '</h1>';
+	document.body.innerHTML = '<button type="button" class="close" data-dismiss="alert">&times;</button>'
+		+ '<h1>' + chrome.extension.getBackgroundPage().show.name + '</h1>';
+	document.getElementsByTagName('button')[0].onclick = window.close.bind(window);
 	var div = document.createElement('div');
 	div.className = 'pagination';
 	
